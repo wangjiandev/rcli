@@ -38,7 +38,12 @@ pub fn process_genpass(
         password.push(c);
     }
     password.shuffle(&mut rng);
-    println!("Generated password: {}", String::from_utf8(password)?);
+
+    let password = String::from_utf8(password)?;
+    println!("Generated password: {}", password);
+
+    let estimate = zxcvbn::zxcvbn(password.as_str(), &[]); // zxcvbn is a password strength estimator
+    println!("Password Estimate: {}", estimate.score());
 
     Ok(())
 }
