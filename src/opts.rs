@@ -1,5 +1,6 @@
 use anyhow::Result;
 use clap::Parser;
+use core::fmt;
 use std::{path::Path, str::FromStr};
 
 #[derive(Debug, Parser)]
@@ -19,7 +20,6 @@ pub enum SubCommand {
 pub enum OutputFormat {
     Json,
     Yaml,
-    Toml,
 }
 
 impl From<OutputFormat> for &'static str {
@@ -27,7 +27,6 @@ impl From<OutputFormat> for &'static str {
         match format {
             OutputFormat::Json => "json",
             OutputFormat::Yaml => "yaml",
-            OutputFormat::Toml => "toml",
         }
     }
 }
@@ -39,9 +38,14 @@ impl FromStr for OutputFormat {
         match s.to_lowercase().as_str() {
             "json" => Ok(OutputFormat::Json),
             "yaml" => Ok(OutputFormat::Yaml),
-            "toml" => Ok(OutputFormat::Toml),
             _ => Err(anyhow::anyhow!("Invalid format: {}", s)),
         }
+    }
+}
+
+impl fmt::Display for OutputFormat {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", Into::<&'static str>::into(*self))
     }
 }
 
@@ -49,13 +53,13 @@ impl FromStr for OutputFormat {
 pub struct CsvOpts {
     #[arg(short, long, value_parser = verify_input_file)]
     pub input: String,
-    #[arg(short, long, default_value = "output.json")] // "output.json".into()
-    pub output: String,
+    #[arg(short, long)]
+    pub output: Option<String>,
     #[arg(short, long, default_value_t = ',')]
     pub deliniter: char,
     #[arg(long, default_value_t = true)]
     pub header: bool,
-    #[arg(short, long, value_parser = parser_format, default_value = "json")]
+    #[arg(long, value_parser = parser_format, default_value = "json")]
     pub format: OutputFormat,
 }
 
