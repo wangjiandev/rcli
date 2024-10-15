@@ -26,7 +26,7 @@ fn main() -> anyhow::Result<()> {
         },
         Commands::Text(text_command) => match text_command {
             TextCommand::Sign(options) => {
-                println!("TextCommand::Sign: {:?}", options);
+                process::process_sign(&options.input, &options.key, options.format)?
             }
             TextCommand::Verify(options) => {
                 println!("TextCommand::Verify: {:?}", options);
