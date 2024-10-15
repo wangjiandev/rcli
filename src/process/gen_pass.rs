@@ -1,6 +1,6 @@
 use rand::Rng;
 
-use crate::options::GenPassOptions;
+use crate::cli::gen_pass_options::GenPassOptions;
 
 pub fn process_genpass(options: &GenPassOptions) -> anyhow::Result<()> {
     let mut rng = rand::thread_rng();
