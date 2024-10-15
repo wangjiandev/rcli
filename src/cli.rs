@@ -1,12 +1,14 @@
 pub mod base64_options;
 pub mod csv_options;
 pub mod gen_pass_options;
+pub mod text_options;
 
 use base64_options::Base64Command;
 use clap::{Parser, Subcommand};
 use csv_options::CsvOptions;
 use gen_pass_options::GenPassOptions;
 use std::path::Path;
+use text_options::TextCommand;
 
 #[derive(Parser, Debug)]
 #[command(name="rcli", version, about, long_about = None)]
@@ -26,9 +28,12 @@ pub enum Commands {
     /// Encode or Decode Base64
     #[command(subcommand)]
     Base64(Base64Command),
+    /// Text Sign or Verify
+    #[command(subcommand)]
+    Text(TextCommand),
 }
 
-fn verify_input_file(path: &str) -> Result<String, anyhow::Error> {
+fn verify_file(path: &str) -> Result<String, anyhow::Error> {
     if path == "-" {
         return Ok(path.into());
     }
@@ -43,11 +48,11 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_verify_input_file() {
-        assert!(matches!(verify_input_file("-"), Ok(s) if s == "-"));
-        assert!(matches!(verify_input_file("Cargo.toml"), Ok(s) if s == "Cargo.toml"));
-        assert!(verify_input_file("*").is_err());
-        assert!(verify_input_file("Cargo.toml").is_ok());
-        assert!(verify_input_file("not_exist.txt").is_err());
+    fn test_verify_file() {
+        assert!(matches!(verify_file("-"), Ok(s) if s == "-"));
+        assert!(matches!(verify_file("Cargo.toml"), Ok(s) if s == "Cargo.toml"));
+        assert!(verify_file("*").is_err());
+        assert!(verify_file("Cargo.toml").is_ok());
+        assert!(verify_file("not_exist.txt").is_err());
     }
 }

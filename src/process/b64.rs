@@ -1,9 +1,6 @@
-use std::{
-    fs::File,
-    io::{stdin, Read},
-};
+use std::io::Read;
 
-use crate::cli::base64_options::Base64Format;
+use crate::{cli::base64_options::Base64Format, utils::get_reader};
 use base64::{engine::general_purpose::URL_SAFE_NO_PAD, prelude::BASE64_STANDARD, Engine as _};
 
 pub fn process_encode(input: &str, format: &Base64Format) -> Result<(), anyhow::Error> {
@@ -37,14 +34,6 @@ pub fn process_decode(input: &str, format: &Base64Format) -> Result<(), anyhow::
     let decoded = String::from_utf8(decoded)?;
     println!("{}", decoded.trim());
     Ok(())
-}
-
-fn get_reader(input: &str) -> Result<Box<dyn Read>, anyhow::Error> {
-    if input == "-" {
-        Ok(Box::new(stdin()))
-    } else {
-        Ok(Box::new(File::open(input)?))
-    }
 }
 
 #[cfg(test)]

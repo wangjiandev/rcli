@@ -1,11 +1,11 @@
 use clap::Args;
 
-use super::verify_input_file;
+use super::verify_file;
 
 #[derive(Args, Debug)]
 pub struct CsvOptions {
     /// Input CSV file path
-    #[arg(short, long, value_parser = verify_input_file, default_value = "-")]
+    #[arg(short, long, value_parser = verify_file, default_value = "-")]
     pub input: String,
     /// Output JSON file path
     #[arg(short, long, default_value = "output.json")]
