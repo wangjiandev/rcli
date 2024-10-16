@@ -46,6 +46,10 @@ pub struct TextVerifyOptions {
     #[arg(short, long, value_parser = verify_file, default_value = "-")]
     pub key: String,
 
+    /// Text sign format
+    #[arg(short, long, value_parser = parser_text_sign_format, default_value = "blake3")]
+    pub format: TextSignFormat,
+
     /// Signature file path
     #[arg(short, long, value_parser = verify_file, default_value = "-")]
     pub signature: String,

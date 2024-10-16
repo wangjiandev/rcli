@@ -28,9 +28,12 @@ fn main() -> anyhow::Result<()> {
             TextCommand::Sign(options) => {
                 process::process_sign(&options.input, &options.key, options.format)?
             }
-            TextCommand::Verify(options) => {
-                println!("TextCommand::Verify: {:?}", options);
-            }
+            TextCommand::Verify(options) => process::process_verify(
+                &options.input,
+                &options.key,
+                options.format,
+                &options.signature,
+            )?,
             TextCommand::GenKey(options) => {
                 println!("TextCommand::GenKey: {:?}", options);
             }
