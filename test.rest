@@ -1,5 +1,8 @@
 ### read file
 GET http://0.0.0.0:8080/Cargo.toml
 
+### read file
+GET http://0.0.0.0:8080/tower/Cargo.toml
+
 ### read file not exist
 GET http://0.0.0.0:8080/not_exist.txt
