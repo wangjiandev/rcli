@@ -1,9 +1,10 @@
 use std::{
     fmt::{Display, Formatter},
+    path::PathBuf,
     str::FromStr,
 };
 
-use super::verify_file;
+use super::{verify_file, verify_path};
 use clap::{Args, Parser};
 
 #[derive(Parser, Debug)]
@@ -56,7 +57,15 @@ pub struct TextVerifyOptions {
 }
 
 #[derive(Args, Debug)]
-pub struct TextGenKeyOptions {}
+pub struct TextGenKeyOptions {
+    /// Text sign format
+    #[arg(short, long, value_parser = parser_text_sign_format, default_value = "blake3")]
+    pub format: TextSignFormat,
+
+    /// Output file path
+    #[arg(short, long, value_parser = verify_path)]
+    pub output: PathBuf,
+}
 
 #[derive(Debug, Clone, Copy)]
 pub enum TextSignFormat {

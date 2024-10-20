@@ -1,39 +1,30 @@
 use std::io::Read;
 
 use crate::{cli::base64_options::Base64Format, utils::get_reader};
+use anyhow::Result;
 use base64::{engine::general_purpose::URL_SAFE_NO_PAD, prelude::BASE64_STANDARD, Engine as _};
 
-pub fn process_encode(input: &str, format: &Base64Format) -> Result<(), anyhow::Error> {
+pub fn process_encode(input: &str, format: &Base64Format) -> Result<String> {
     let mut reader: Box<dyn Read> = get_reader(input)?;
-
     let mut buffer = Vec::new();
     reader.read_to_end(&mut buffer)?;
-
     let encoded = match format {
         Base64Format::UrlSafe => URL_SAFE_NO_PAD.encode(buffer),
         Base64Format::Standard => BASE64_STANDARD.encode(buffer),
     };
-
-    println!("{}", encoded);
-
-    Ok(())
+    Ok(encoded)
 }
 
-pub fn process_decode(input: &str, format: &Base64Format) -> Result<(), anyhow::Error> {
+pub fn process_decode(input: &str, format: &Base64Format) -> Result<String> {
     let mut reader: Box<dyn Read> = get_reader(input)?;
-
     let mut buffer = String::new();
     reader.read_to_string(&mut buffer)?;
     buffer = buffer.trim().to_owned();
-
     let decoded = match format {
         Base64Format::UrlSafe => URL_SAFE_NO_PAD.decode(buffer)?,
         Base64Format::Standard => BASE64_STANDARD.decode(buffer)?,
     };
-
-    let decoded = String::from_utf8(decoded)?;
-    println!("{}", decoded.trim());
-    Ok(())
+    Ok(String::from_utf8(decoded)?)
 }
 
 #[cfg(test)]

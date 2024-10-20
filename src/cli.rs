@@ -3,11 +3,12 @@ pub mod csv_options;
 pub mod gen_pass_options;
 pub mod text_options;
 
+use anyhow::Result;
 use base64_options::Base64Command;
 use clap::{Parser, Subcommand};
 use csv_options::CsvOptions;
 use gen_pass_options::GenPassOptions;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use text_options::TextCommand;
 
 #[derive(Parser, Debug)]
@@ -33,7 +34,7 @@ pub enum Commands {
     Text(TextCommand),
 }
 
-fn verify_file(path: &str) -> Result<String, anyhow::Error> {
+fn verify_file(path: &str) -> Result<String> {
     if path == "-" {
         return Ok(path.into());
     }
@@ -41,6 +42,15 @@ fn verify_file(path: &str) -> Result<String, anyhow::Error> {
         return Err(anyhow::format_err!("Input file {} not found", path));
     }
     Ok(path.into())
+}
+
+fn verify_path(path: &str) -> Result<PathBuf> {
+    let p = Path::new(path);
+    if p.exists() && p.is_dir() {
+        Ok(path.into())
+    } else {
+        Err(anyhow::format_err!("Output file {} dose not exist", path))
+    }
 }
 
 #[cfg(test)]
