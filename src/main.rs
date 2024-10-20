@@ -2,6 +2,7 @@ use clap::Parser;
 use rcli::{
     cli::{
         base64_options::Base64Command,
+        http_options::HttpCommand,
         text_options::{TextCommand, TextSignFormat},
         Cli, Commands,
     },
@@ -13,7 +14,9 @@ use rcli::{
 /// rcli base64 encode -i input.txt
 /// rcli base64 decode -i input.txt
 /// rcli text sign -k fixtures/blake3
-fn main() -> anyhow::Result<()> {
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    tracing_subscriber::fmt::init();
     let cli = Cli::parse();
     match cli.command {
         Commands::Csv(options) => {
@@ -62,6 +65,11 @@ fn main() -> anyhow::Result<()> {
                         std::fs::write(pk_path, keys[1].clone())?;
                     }
                 }
+            }
+        },
+        Commands::Http(http_command) => match http_command {
+            HttpCommand::Serve(options) => {
+                process::process_http_serve(options.directory, options.port).await?;
             }
         },
     }

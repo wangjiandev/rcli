@@ -1,6 +1,7 @@
 pub mod base64_options;
 pub mod csv_options;
 pub mod gen_pass_options;
+pub mod http_options;
 pub mod text_options;
 
 use anyhow::Result;
@@ -8,6 +9,7 @@ use base64_options::Base64Command;
 use clap::{Parser, Subcommand};
 use csv_options::CsvOptions;
 use gen_pass_options::GenPassOptions;
+use http_options::HttpCommand;
 use std::path::{Path, PathBuf};
 use text_options::TextCommand;
 
@@ -32,6 +34,9 @@ pub enum Commands {
     /// Text Sign or Verify
     #[command(subcommand)]
     Text(TextCommand),
+    /// HTTP Server
+    #[command(subcommand)]
+    Http(HttpCommand),
 }
 
 fn verify_file(path: &str) -> Result<String> {
